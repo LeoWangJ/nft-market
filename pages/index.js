@@ -23,9 +23,9 @@ export default function Home() {
     const marketNFTs = await marketContract.fetchMarketTokens()
 
     const items = await Promise.all(marketNFTs.map(async i=>{
-      const tokenURL = await nftContract.tokenURL(i.tokenId)
+      const tokenURI = await nftContract.tokenURI(i.tokenId)
       const price = ethers.utils.formatUnits(i.price.toString(),'ether') 
-      const meta = await axios.get(tokenURL)
+      const meta = await axios.get(tokenURI)
 
       return {
         price,
