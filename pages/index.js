@@ -48,8 +48,8 @@ export default function Home() {
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-    const price = ethers.utils.formatUnits(nft.price.toString(),'ether')
-    const transition = await contract.createMarketSale(contract,nft.tokenId, {
+    const price = ethers.utils.parseUnits(nft.price.toString(),'ether')
+    const transition = await contract.createMarketSale(nftaddress, nft.tokenId, {
       value: price
     })
 
