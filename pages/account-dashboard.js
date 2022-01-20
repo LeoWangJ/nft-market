@@ -37,6 +37,7 @@ export default function AccountDashboard(){
                 image: meta.data.image,
                 name: meta.data.name,
                 description: meta.data.description,
+                sold: i.sold
             }
             return item
         }))
@@ -60,8 +61,8 @@ export default function AccountDashboard(){
                 <div key={i} className='border shadow rounded-x1 overflow-hidden'>
                   <img src={nft.image} />
                   <div className='p-4'>
-                    <p style={{height:'64px'}} className='text-3x1 font-semibold'>{
-                      nft.name}</p>
+                    { nft.sold ? <p style={{height:'32px'}} className='text-3x1 font-semibold text-red-600'>solded</p> : null}
+                    <p style={{height:'64px'}} className='text-3x1 font-semibold'>{nft.name}</p>
                       <div style={{height:'72px', overflow:'hidden'}}>
                         <p className='text-gray-400'>{nft.description}</p>
                         </div>
