@@ -1,77 +1,91 @@
-import {ethers, providers} from 'ethers'
-import {useEffect, useState} from 'react'
-import {nftaddress, nftmarketaddress} from '../config'
-import Market from '../artifacts/contracts/Market.sol/Market.json'
-import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
+import { ethers, providers } from "ethers";
+import { useEffect, useState } from "react";
+import { nftaddress, nftmarketaddress } from "../config";
+import Market from "../artifacts/contracts/Market.sol/Market.json";
+import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 
-import Web3Modal from 'web3modal'
-import axios from 'axios'
+import Web3Modal from "web3modal";
+import IPFS from "./api/ipfs";
 
-export default function MyNFTs(){
-    const [NFTs, setNFTs] = useState([])
-    const [loadingState, setLoadingState] = useState('not-loaded')
+export default function MyNFTs() {
+  const [NFTs, setNFTs] = useState([]);
+  const [loadingState, setLoadingState] = useState("not-loaded");
 
-    useEffect(()=>{
-        loadsNFT()
-    },[])
-    
-    async function loadsNFT(){
-        const web3modal = new Web3Modal()
-        const connection = await web3modal.connect()
-        const provider = new ethers.providers.Web3Provider(connection)
-        const signer = provider.getSigner()
+  useEffect(() => {
+    loadsNFT();
+  }, []);
 
-        const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-        const data = await marketContract.fetchMyNFTs()
-        
-        const nftContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-        
-        const items = await Promise.all(data.map(async i =>{
-            const tokenURI = await nftContract.tokenURI(i.tokenId)
+  async function loadsNFT() {
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
 
-            const meta = await axios.get(tokenURI)
-            const price = ethers.utils.formatEther(i.price.toString(),'ether')
-            const item = {
-                price,
-                tokenId: i.tokenId.toNumber(),
-                seller: i.seller,
-                owner: i.owner,
-                image: meta.data.image,
-                name: meta.data.name,
-                description: meta.data.description
-            }
-            return item
+    const marketContract = new ethers.Contract(
+      nftmarketaddress,
+      Market.abi,
+      signer
+    );
+    const data = await marketContract.fetchMyNFTs();
 
-        }))
-        setNFTs(items)
-        setLoadingState('loaded')
-    }
-    if(loadingState === 'loaded' && !NFTs.length) return (<h1
-        className='px-20 py-7 text-4x1'>You do not own any NFTs currently :(</h1>)
-
+    const nftContract = new ethers.Contract(nftaddress, NFT.abi, provider);
+    const ipfsAPI = new IPFS();
+    await ipfsAPI.create();
+    const items = await Promise.all(
+      data.map(async (i) => {
+        const tokenURI = await nftContract.tokenURI(i.tokenId);
+        const meta = await ipfsAPI.loadMeta(tokenURI);
+        const image = await ipfsAPI.loadImgURL(meta.image);
+        const price = ethers.utils.formatEther(i.price.toString(), "ether");
+        const item = {
+          price,
+          tokenId: i.tokenId.toNumber(),
+          seller: i.seller,
+          owner: i.owner,
+          image: image,
+          name: meta.name,
+          description: meta.description,
+        };
+        return item;
+      })
+    );
+    setNFTs(items);
+    setLoadingState("loaded");
+  }
+  if (loadingState === "loaded" && !NFTs.length)
     return (
-        <div className='flex justify-center'>
-          <div className='px-4' style={{maxWidth: '1600px'}}>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4'>
-            {
-              NFTs.map((nft, i)=>(
-                <div key={i} className='border shadow rounded-x1 overflow-hidden'>
-                  <img src={nft.image} />
-                  <div className='p-4'>
-                    <p style={{height:'64px'}} className='text-3x1 font-semibold'>{
-                      nft.name}</p>
-                      <div style={{height:'72px', overflow:'hidden'}}>
-                        <p className='text-gray-400'>{nft.description}</p>
-                        </div>
-                    </div>
-                    <div className='p-4 bg-black'>
-                        <p className='text-3x-1 mb-4 font-bold text-white'>{nft.price} ETH</p>
-                      </div>
+      <h1 className="px-20 py-7 text-4x1">
+        You do not own any NFTs currently :(
+      </h1>
+    );
+
+  return (
+    <div className="flex justify-center">
+      <div className="px-4" style={{ maxWidth: "1600px" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+          {NFTs.map((nft, i) => (
+            <div key={i} className="border shadow rounded-x1 overflow-hidden">
+              <img src={nft.image} />
+              <div className="p-4">
+                <p
+                  style={{ height: "64px" }}
+                  className="text-3x1 font-semibold"
+                >
+                  {nft.name}
+                </p>
+                <div style={{ height: "72px", overflow: "hidden" }}>
+                  <p className="text-gray-400">{nft.description}</p>
                 </div>
-              ))
-            }
-          </div>
-          </div>
+              </div>
+              <div className="p-4 bg-black">
+                <p className="text-3x-1 mb-4 font-bold text-white">
+                  {nft.price} ETH
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
-    )
+  );
 }
