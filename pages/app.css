@@ -3,7 +3,7 @@
 }
 
 body {
-  background-image: url(https://i.ibb.co/BcfgWTH/background.jpg);
+  background-image: url(../public/bg.jpeg);
   background-repeat: no-repeat;
   background-size: cover;
   padding: 0;
@@ -15,9 +15,8 @@ body {
 
 /* #NiceAndSimple: Main - margin:auto */
 
-
 a {
-  color: #00CED1;
+  color: #00ced1;
   transition: all 0.2s;
 }
 a:hover {

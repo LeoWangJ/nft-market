@@ -5,6 +5,7 @@ import { nftaddress, nftmarketaddress } from "../config";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/Market.sol/Market.json";
 import IPFS from "./api/ipfs";
+import Image from "next/image";
 
 export default function Home() {
   const [NFTs, setNFTs] = useState([]);
@@ -77,25 +78,27 @@ export default function Home() {
       <div className="px-4" style={{ maxWidth: "1600px" }}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {NFTs.map((nft, i) => (
-            <div key={i} className="border shadow rounded-x1 overflow-hidden">
-              <img src={nft.image} />
-              <div className="p-4">
-                <p
-                  style={{ height: "64px" }}
-                  className="text-3x1 font-semibold"
-                >
-                  {nft.name}
-                </p>
-                <div style={{ height: "72px", overflow: "hidden" }}>
-                  <p className="text-gray-400">{nft.description}</p>
-                </div>
+            <div
+              key={i}
+              className="border rounded-lg border-slate-200 shadow rounded-x1 overflow-hidden bg-white"
+            >
+              <Image
+                className="rounded "
+                src={nft.image}
+                accept="image/gif, image/jpeg, image/png"
+                width="180"
+                height="180"
+                alt="preview"
+              />
+              <div className="p-2">
+                <p className="text-3x1 font-semibold h-5">{nft.name}</p>
               </div>
-              <div className="p-4 bg-black">
-                <p className="text-3x-1 mb-4 font-bold text-white">
+              <div className="p-2 ">
+                <p className="text-3x-1 mb-4 font-bold text-bg">
                   {nft.price} ETH
                 </p>
                 <button
-                  className="w-full bg-purple-500 text-white font-bold py-3 px-12 rounded"
+                  className="w-full bg-[#005b80] text-white font-bold py-3 px-12 rounded"
                   onClick={() => buyNFT(nft)}
                 >
                   Buy

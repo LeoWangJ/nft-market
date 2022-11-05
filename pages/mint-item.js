@@ -16,6 +16,7 @@ export default function MintItem() {
     name: "",
     description: "",
   });
+  const [loading, setLoaing] = useState(false);
   const router = useRouter();
 
   async function onChange(e) {
@@ -30,10 +31,13 @@ export default function MintItem() {
   }
 
   async function createMarket() {
+    setLoaing(true);
     const { price, name, description } = formInput;
-    if (!name || !price || !description || !fileUrl) return;
+    if (!name || !price || !description || !fileUrl) {
+      setLoaing(false);
+      return;
+    }
     try {
-      // const cid = await storeNFT(file);
       const ipfsAPI = new IPFS();
       await ipfsAPI.create();
       const imgIpfs = await ipfsAPI.add(file);
@@ -50,6 +54,7 @@ export default function MintItem() {
     } catch (e) {
       console.log("Error uploading data:", e);
     }
+    setLoaing(false);
   }
 
   async function createSale(url) {
@@ -86,7 +91,7 @@ export default function MintItem() {
 
   return (
     <div className="flex justify-center">
-      <div className="w-1/2 flex flex-col pb-12">
+      <div className="w-1/3 flex flex-col pb-12">
         <input
           placeholder="Asset Name"
           className="mt-8 border rounded p-4"
@@ -94,7 +99,7 @@ export default function MintItem() {
             updateFormInput({ ...formInput, name: e.target.value })
           }
         />
-        <textarea
+        <input
           placeholder="Asset Description"
           className="mt-2 border rounded p-4"
           onChange={(e) =>
@@ -109,19 +114,22 @@ export default function MintItem() {
           }
         />
         <input type="file" name="Asset" className="mt-4" onChange={onChange} />
-        {fileUrl && (
-          <Image
-            className="rounded mt-4"
-            src={fileUrl}
-            accept="image/gif, image/jpeg, image/png"
-            width="300"
-            height="300"
-            alt="preview"
-          />
-        )}
+        <div>
+          {fileUrl && (
+            <Image
+              className="rounded mt-4"
+              src={fileUrl}
+              accept="image/gif, image/jpeg, image/png"
+              width="300"
+              height="300"
+              alt="preview"
+            />
+          )}
+        </div>
         <button
+          disabled={loading}
           onClick={createMarket}
-          className="font-bold mt-4 bg-purple-500 text-white rounded p-4 shadow-lg"
+          className="font-bold mt-4 bg-[#005b80] text-white rounded p-4 shadow-lg"
         >
           Mint NFT
         </button>

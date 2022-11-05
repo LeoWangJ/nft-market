@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { nftaddress, nftmarketaddress } from "../config";
 import Market from "../artifacts/contracts/Market.sol/Market.json";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
-
+import Image from "next/image";
 import Web3Modal from "web3modal";
 import IPFS from "./api/ipfs";
 
@@ -64,23 +64,24 @@ export default function MyNFTs() {
       <div className="px-4" style={{ maxWidth: "1600px" }}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {NFTs.map((nft, i) => (
-            <div key={i} className="border shadow rounded-x1 overflow-hidden">
-              <img src={nft.image} />
-              <div className="p-4">
-                <p
-                  style={{ height: "64px" }}
-                  className="text-3x1 font-semibold"
-                >
-                  {nft.name}
-                </p>
-                <div style={{ height: "72px", overflow: "hidden" }}>
-                  <p className="text-gray-400">{nft.description}</p>
-                </div>
+            <div
+              key={i}
+              className="border rounded-lg border-slate-200 shadow rounded-x1 overflow-hidden bg-white"
+            >
+              <Image
+                className="rounded "
+                src={nft.image}
+                accept="image/gif, image/jpeg, image/png"
+                width="180"
+                height="180"
+                alt="preview"
+              />
+              <div className="p-2">
+                <p className="text-3x1 font-semibold h-5 mb-3">{nft.name}</p>
+                <p className=" h-5 text-gray-400 ">{nft.description}</p>
               </div>
-              <div className="p-4 bg-black">
-                <p className="text-3x-1 mb-4 font-bold text-white">
-                  {nft.price} ETH
-                </p>
+              <div className="p-2">
+                <p className="text-3x-1 mb-4 font-bold">{nft.price} ETH</p>
               </div>
             </div>
           ))}
