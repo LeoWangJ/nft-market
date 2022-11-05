@@ -4,9 +4,9 @@ nft-market
 
 # Project description
 
-NFT platform constructed with IPFS,including creation and purchase of NFT
+NFT platform constructed with IPFS,including creation and purchase and show of NFT
 
-Store on IPFS, use ipfs gateway to obtain information and pictures
+Store on IPFS, use IPFS gateway to store/obtain information and pictures
 
 # IPFS related code
 
@@ -14,7 +14,7 @@ Store on IPFS, use ipfs gateway to obtain information and pictures
 
 - [IPFS add](https://github.com/LeoWangJ/nft-market/blob/main/pages/mint-item.js#L41)
 
-- [IPFS retrieve](https://github.com/LeoWangJ/nft-market/blob/main/pages/index.js#L28)
+- [IPFS retrieve](https://github.com/LeoWangJ/nft-market/blob/main/pages/index.js#L33)
 
 # Project run
 
@@ -46,7 +46,7 @@ yarn deploy-local
 
 please use goeril testnet
 
-Website - [https://leowangj.github.io/vsualization-generator-nft](https://leowangj.github.io/vsualization-generator-nft)
+Website - [https://nft-market-neon.vercel.app/](https://nft-market-neon.vercel.app/)
 
 # Team
 
