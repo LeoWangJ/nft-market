@@ -6,16 +6,21 @@ import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/Market.sol/Market.json";
 import IPFS from "./api/ipfs";
 import Image from "next/image";
+import { isGeorilNetwork } from "./utils";
 
 export default function Home() {
   const [NFTs, setNFTs] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [correctNetwork, setGeorilNetwork] = useState(true);
   useEffect(() => {
     loadNFTs();
   }, []);
 
   async function loadNFTs() {
-    const provider = new ethers.providers.JsonRpcBatchProvider();
+    const net = await isGeorilNetwork();
+    setGeorilNetwork(net);
+    if (!net) return;
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const nftContract = new ethers.Contract(nftaddress, NFT.abi, provider);
     const marketContract = new ethers.Contract(
       nftmarketaddress,
@@ -69,9 +74,17 @@ export default function Home() {
     await transition.wait();
     loadNFTs();
   }
+  if (!correctNetwork)
+    return (
+      <h1 className="px-20 py-7 text-4x1 text-white">
+        Please use Goerli testnet
+      </h1>
+    );
 
   if (loadingState === "loaded" && NFTs.length === 0)
-    return <h1 className="px-20 py-7 text-4x1">No NFts in marketplace</h1>;
+    return (
+      <h1 className="px-20 py-7 text-4x1 text-white">No NFts in marketplace</h1>
+    );
 
   return (
     <div className="flex justify-center">

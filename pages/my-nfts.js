@@ -1,4 +1,4 @@
-import { ethers, providers } from "ethers";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { nftaddress, nftmarketaddress } from "../config";
 import Market from "../artifacts/contracts/Market.sol/Market.json";
@@ -6,16 +6,21 @@ import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Image from "next/image";
 import Web3Modal from "web3modal";
 import IPFS from "./api/ipfs";
+import { isGeorilNetwork } from "./utils";
 
 export default function MyNFTs() {
   const [NFTs, setNFTs] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [correctNetwork, setGeorilNetwork] = useState(true);
 
   useEffect(() => {
     loadsNFT();
   }, []);
 
   async function loadsNFT() {
+    const net = await isGeorilNetwork();
+    setGeorilNetwork(net);
+    if (!net) return;
     const web3modal = new Web3Modal();
     const connection = await web3modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -52,9 +57,15 @@ export default function MyNFTs() {
     setNFTs(items);
     setLoadingState("loaded");
   }
+  if (!correctNetwork)
+    return (
+      <h1 className="px-20 py-7 text-4x1 text-white">
+        Please use Goerli testnet
+      </h1>
+    );
   if (loadingState === "loaded" && !NFTs.length)
     return (
-      <h1 className="px-20 py-7 text-4x1">
+      <h1 className="px-20 py-7 text-4x1 text-white">
         You do not own any NFTs currently :(
       </h1>
     );
