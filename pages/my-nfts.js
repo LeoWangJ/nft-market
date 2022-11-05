@@ -6,7 +6,7 @@ import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Image from "next/image";
 import Web3Modal from "web3modal";
 import IPFS from "./api/ipfs";
-import { isGeorilNetwork } from "./utils";
+import { isGeorilNetwork } from "../utils";
 
 export default function MyNFTs() {
   const [NFTs, setNFTs] = useState([]);

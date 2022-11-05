@@ -6,7 +6,7 @@ import Market from "../artifacts/contracts/Market.sol/Market.json";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import IPFS from "./api/ipfs";
 import Image from "next/image";
-import { isGeorilNetwork } from "./utils";
+import { isGeorilNetwork } from "../utils";
 
 export default function AccountDashboard() {
   const [NFTs, setNFTs] = useState([]);
